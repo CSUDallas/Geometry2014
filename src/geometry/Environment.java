@@ -97,7 +97,7 @@ public class Environment {
             graphics.drawLine((int)x[i], (int)y[i], (int)x[(i+1)%3], (int)y[(i+1)%3]);
         
         // Draw the interiors of the triangles
-        graphics.setColor(Color.WHITE);
+        graphics.setColor(new Color(140, 180, 220, 200));
         Path2D.Double p = new Path2D.Double();
         p.moveTo(x[0], y[0]);
         p.lineTo(x[1], y[1]);
