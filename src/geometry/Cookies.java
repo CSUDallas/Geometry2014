@@ -135,7 +135,9 @@ class Cookies {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter("pic.ps", "UTF-8");
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+		} catch (FileNotFoundException e){
+			e.printStackTrace();
+		} catch(UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		writer.println("newpath");

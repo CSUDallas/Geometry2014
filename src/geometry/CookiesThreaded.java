@@ -140,7 +140,6 @@ class CookiesThreaded {
 				sem.release();
 			}
 		}.start();
-		//drawpic(numPoints, points, bestX);
 	}
 
 	// Returns the square of the distance between two points
@@ -153,34 +152,4 @@ class CookiesThreaded {
 		if(val < 0)         return -1;
 		else if (val == 0)  return 0;
 		else                return 1;
-	}
-
-
-	public static void drawpic(int n, Point2D.Double[] points, Point2D.Double C){
-		int rad = 1;
-		int fac = 10;
-		int xoffset = 75;
-		int yoffset = 100;
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter("pic.ps", "UTF-8");
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		writer.println("newpath");
-		writer.println("/str 50 string def");
-		writer.println("/Times-Roman 6 selectfont");
-		for(int i = 0; i < n; i++){
-			double x = points[i].x*fac + xoffset;
-			double y = points[i].y*fac + yoffset;
-			writer.printf("%.2f %.2f moveto\n", x + rad, y);
-			writer.printf("%.2f %.2f %d %d %d arc\n", x, y, rad, 0, 360);
-			writer.printf("0 3 rmoveto %d str cvs show\n", i);
-		}
-		writer.printf("%.2f %.2f moveto\n", ((C.x+2.5)*fac) + xoffset, (C.y*fac) + yoffset);
-		writer.printf("%.2f %.2f %d %d %d arc\n", ((C.x)*fac) + xoffset, (C.y*fac) + yoffset, (int)(2.5*fac), 0, 360);
-		writer.println("stroke");
-		writer.println("showpage");
-		writer.close();
-	}
-}
+	}}
