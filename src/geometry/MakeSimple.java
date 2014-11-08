@@ -23,6 +23,10 @@ public class MakeSimple {
     static int C[] = new int[200]; // the one that becomes simple
     static int D[] = new int[200]; // the one that becomes very simple
     static Integer E[] = new Integer[200]; // holds the convex hull
+    
+    // Variables for the minimal convexulation
+    static int numConvexulationChords;
+    static DSArrayList<int[]> convexulationChords;
 
     static SimpleFrame myFrame;
 
@@ -51,6 +55,7 @@ public class MakeSimple {
         createSimplePolygon();
         createVerySimplePolygon();
         createConvexHull();
+        createMinimalConvexulation();
     }
 
     /*
@@ -88,7 +93,7 @@ public class MakeSimple {
     }
 
     
-    /*
+    /**
      * This algorithm makes use of the createSimplePolygon ideas
      * above, and adds one check. If a point P of the polygon 
      * lies close to another edge AB of the polygon, then sometimes
@@ -150,9 +155,12 @@ public class MakeSimple {
                         }
                     }
         }
+        makeCounterclockwise(D, numPoints);
     }
     
-    // Your homework goes here
+    /**
+     * Your old homework went here...
+     */
     public static void createConvexHull(){
     	numHullPoints = numPoints;
     	E = new Integer[numHullPoints];
@@ -175,18 +183,113 @@ public class MakeSimple {
     	});
     }
     
-    // Find the sigma(  (Ax, Ay),  (Bx, By),  (Cx, Cy)  )
-    public static int sigma(double Ax, double Ay, double Bx, double By,
-    		double Cx, double Cy){
-    	double det = -((Bx-Ax)*(Cy-Ay) - (By-Ay)*(Cx-Ax));
+    // Your homework goes here
+    /**
+     * This finds a decomposition of the interior of the very simple convexulation
+     * as ordered in the array D.
+     */
+    public static void createMinimalConvexulation(){
+    	numConvexulationChords = 0;
+    	convexulationChords = new DSArrayList<int[]>();
+    	// Find all interior chords of the polygon, very naively.
+    	for(int i = 0; i < numPoints - 2; i++){
+    		for(int j = i+2; j < numPoints - (i==0 ? 1 : 0); j++){
+    			if(chordInside(D, i, j, numPoints) && !chordCrossesBoundary(D, i, j, numPoints)){
+    				int[] chord = {i, j};
+    				convexulationChords.add(chord);
+        			numConvexulationChords++;
+    			}
+    		}
+    	}
+    }
+    
+    
+    /**
+     * Decides whether the chord from point s to e enters the polygon P as it leaves vertex x
+     * @param P  The array giving the order of the simple polygon's vertices
+     * @param s  the start index of the chord, in the array P
+     * @param e  the end index of the chord, in the array P
+     * @param n  the number of sides of the polygon
+     * @return  true if the chord enters P as it leaves s.
+     */
+    public static boolean chordInside(int[] P, int s, int e, int n){
+    	int before = (s + n - 1) % n;
+    	int after  = (s + 1) % n;
+    	if(sigma(x[P[before]], y[P[before]], x[P[s]], y[P[s]], x[P[after]], y[P[after]]) > 0){
+    		if(sigma(x[P[before]], y[P[before]], x[P[s]], y[P[s]], x[P[e]], y[P[e]]) > 0 &&
+    				sigma(x[P[e]], y[P[e]], x[P[s]], y[P[s]], x[P[after]], y[P[after]]) > 0)
+    			return true;
+    		else 
+    			return false;
+    	} else {
+    		if(sigma(x[P[before]], y[P[before]], x[P[s]], y[P[s]], x[P[e]], y[P[e]]) > 0 ||
+    				sigma(x[P[e]], y[P[e]], x[P[s]], y[P[s]], x[P[after]], y[P[after]]) > 0)
+    			return true;
+    		else 
+    			return false;
+    	}
+    }
+    
+    
+    /**
+     * Decides whether the chord from point s to e crosses any edges of P
+     * @param P  The array giving the order of the simple polygon's vertices
+     * @param s  the start index of the chord, in the array P
+     * @param e  the end index of the chord, in the array P
+     * @param n  the number of points on the polygon
+     * @return  true if the chord enters P as it leaves s.
+     */
+    public static boolean chordCrossesBoundary(int[] P, int s, int e, int n){
+    	for(int i = 0; i < n; i++){
+    		if(crosses(x[P[i]], y[P[i]], x[P[(i+1)%n]], y[P[(i+1)%n]], x[P[s]], y[P[s]], x[P[e]], y[P[e]]))
+    			return true;
+    	}
+    	return false;
+    }
+    
+    
+    
+    /**
+     * Finds whether traveling A->B->C makes a right- or left-turn
+     * @param Ax coordinates of the point A
+     * @param Ay
+     * @param Bx coordinates of the point B
+     * @param By
+     * @param Cx coordinates of the point C
+     * @param Cy
+     * @return  sigma(  (Ax, Ay),  (Bx, By),  (Cx, Cy)  ), which is in the set {-1, 0, 1} for {right, collinear, left} resp.
+     */
+    public static int sigma(double Ax, double Ay, double Bx, double By, double Cx, double Cy){
+    	double det = ((Bx-Ax)*(Cy-Ay) - (By-Ay)*(Cx-Ax));
     	if(det < 0)
     		return -1;
     	else if(det > 0)
     		return 1;
     	else 
-    		return 0;
+    		return 0; 
     }
 
+    
+    /**
+     * Returns the signed area (half the sum of the 2x2 determinants) of the polygon described by P 
+     * @param P Array of indices into the x[] and y[] arrays, giving a simple polygon
+     * @param n Number of points in the polygon, in case its not all of the points
+     * @return  the area of the polygon. Positive if the points are traversed counter-clockwise, otherwise negative. 
+     */
+    public static double signedArea(int[] P, int n){
+    	double rv = 0;
+    	for(int i = 0; i < n; i++)
+    		rv += x[P[i]]*y[P[(i+1)%n]] - x[P[(i+1)%n]]*y[P[i]];
+    	return rv/2;
+    }
+
+    /**
+     * Returns the sum of the lengths of two segments sharing a common point
+     * @param i the index into the x[] and y[] arrays of the first point
+     * @param j the index into the x[] and y[] arrays of the second point
+     * @param k the index into the x[] and y[] arrays of the third point
+     * @return distance(i, j) + distance(j, k)
+     */
     public static double dis2(int i, int j, int k) {
         return Math.sqrt((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j])
                 * (y[i] - y[j]))
@@ -194,6 +297,12 @@ public class MakeSimple {
                         * (y[k] - y[j]));
     }
 
+    /**
+     * Returns the distance between two points
+     * @param i the index into the x[] and y[] arrays of the first point
+     * @param j the index into the x[] and y[] arrays of the second point
+     * @return the distance between the two points
+     */
     public static double dis(int i, int j) {
         return Math.sqrt((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j])
                 * (y[i] - y[j]));
@@ -202,6 +311,7 @@ public class MakeSimple {
     /*
      * Naive crosses method. Assumes points are in general position, which
      * is good enough for this project.
+     * Returns true if (a,b)-(c,d) crosses (e,f)-(g,h)
      */
     public static boolean crosses(double a, double b, double c, double d,
             double e, double f, double g, double h) {
@@ -212,6 +322,26 @@ public class MakeSimple {
         return ((det1a * det1b < 0) && (det2a * det2b < 0));
     }
 
+    
+    /**
+     * If the polygon P is traversed counter-clockwise, it leaves it alone, and otherwise reverses it.
+     * @param P  The indices of the polygon, assumed to be simple
+     */
+    public static void makeCounterclockwise(int[] P, int n){
+    	if(signedArea(P, n) < 0){ // reverse the indices
+    		for(int i = 0; i < n/2; i++){
+    			int tmp = P[i];
+    			P[i] = P[n-1-i];
+    			P[n-1-i] = tmp;
+    		}
+    	}
+    }
+
+    
+    /**
+     * The frame that displays this application's GUI.
+     *
+     */
     public static class SimpleFrame extends JFrame {
         public static JSlider numPointsSlider;
 
@@ -225,6 +355,7 @@ public class MakeSimple {
             tabbedPane.addTab("Simple", new SimplePanel());
             tabbedPane.addTab("Very Simple", new VerySimplePanel());
             tabbedPane.addTab("Convex Hull", new ConvexPanel());
+            tabbedPane.addTab("Convexulated Very Simple", new ConvexulationPanel());
             content.add(tabbedPane, java.awt.BorderLayout.CENTER);
 
             // Slider for the number of points
@@ -248,6 +379,11 @@ public class MakeSimple {
         }
     }
 
+    
+    /**
+     * Displays the point set and a randomly-ordered (non-simple) polygon on it.
+     *
+     */
     public static class ScrambledPanel extends JPanel {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -261,18 +397,23 @@ public class MakeSimple {
             // First draw the segments
             g2.setColor(Color.red);
             for (int i = 0; i < numPoints; i++)
-                g2.drawLine((int) (Xwid * x[B[i]]), (int) (Ywid * y[B[i]]),
+                g2.drawLine((int) (Xwid * x[B[i]]), size.height - (int) (Ywid * y[B[i]]),
                         (int) (Xwid * x[B[(i + 1) % numPoints]]),
-                        (int) (Ywid * y[B[(i + 1) % numPoints]]));
+                        size.height - (int) (Ywid * y[B[(i + 1) % numPoints]]));
 
             // Now draw the points
             for (int i = 0; i < numPoints; i++) {
-                g2.fillRect((int) (Xwid * x[i]) - POINTWID, (int) (Ywid * y[i])
+                g2.fillRect((int) (Xwid * x[i]) - POINTWID, size.height - (int) (Ywid * y[i])
                         - POINTWID, 2 * POINTWID + 1, 2 * POINTWID + 1);
             }
         }
     }
 
+    
+    /**
+     * Displays a simple polygon on the point set.
+     *
+     */
     public static class SimplePanel extends JPanel {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -292,18 +433,23 @@ public class MakeSimple {
                     g2.setColor(Color.green);
                 if (i > 1)
                     g2.setColor(Color.red);
-                g2.drawLine((int) (Xwid * x[C[i]]), (int) (Ywid * y[C[i]]),
+                g2.drawLine((int) (Xwid * x[C[i]]), size.height - (int) (Ywid * y[C[i]]),
                         (int) (Xwid * x[C[(i + 1) % numPoints]]),
-                        (int) (Ywid * y[C[(i + 1) % numPoints]]));
+                        size.height - (int) (Ywid * y[C[(i + 1) % numPoints]]));
             }
             // Now draw the points
             for (int i = 0; i < numPoints; i++) {
-                g2.fillRect((int) (Xwid * x[i]) - POINTWID, (int) (Ywid * y[i])
+                g2.fillRect((int) (Xwid * x[i]) - POINTWID, size.height - (int) (Ywid * y[i])
                         - POINTWID, 2 * POINTWID + 1, 2 * POINTWID + 1);
             }
         }
     }
 
+    
+    /**
+     * Displays the simple polygon on the point set, having somewhat shorter length.
+     *
+     */
     public static class VerySimplePanel extends JPanel {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -323,18 +469,22 @@ public class MakeSimple {
                     g2.setColor(Color.green);
                 if (i > 1)
                     g2.setColor(Color.red);
-                g2.drawLine((int) (Xwid * x[D[i]]), (int) (Ywid * y[D[i]]),
+                g2.drawLine((int) (Xwid * x[D[i]]), size.height - (int) (Ywid * y[D[i]]),
                         (int) (Xwid * x[D[(i + 1) % numPoints]]),
-                        (int) (Ywid * y[D[(i + 1) % numPoints]]));
+                        size.height - (int) (Ywid * y[D[(i + 1) % numPoints]]));
             }
             // Now draw the points
             for (int i = 0; i < numPoints; i++) {
-                g2.fillRect((int) (Xwid * x[i]) - POINTWID, (int) (Ywid * y[i])
+                g2.fillRect((int) (Xwid * x[i]) - POINTWID, size.height - (int) (Ywid * y[i])
                         - POINTWID, 2 * POINTWID + 1, 2 * POINTWID + 1);
             }
         }
     }
 
+    /**
+     * Displays the convex hull of the point set.
+     *
+     */
     public static class ConvexPanel extends JPanel{
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -348,17 +498,54 @@ public class MakeSimple {
             // First draw the segments
             g2.setColor(Color.red);
             for (int i = 0; i < numHullPoints; i++) {
-                g2.drawLine((int) (Xwid * x[E[i]]), (int) (Ywid * y[E[i]]),
+                g2.drawLine((int) (Xwid * x[E[i]]), size.height - (int) (Ywid * y[E[i]]),
                         (int) (Xwid * x[E[(i + 1) % numHullPoints]]),
-                        (int) (Ywid * y[E[(i + 1) % numHullPoints]]));
+                        size.height - (int) (Ywid * y[E[(i + 1) % numHullPoints]]));
             }
             // Now draw the points
             for (int i = 0; i < numPoints; i++) {
-                g2.fillRect((int) (Xwid * x[i]) - POINTWID, (int) (Ywid * y[i])
+                g2.fillRect((int) (Xwid * x[i]) - POINTWID, size.height - (int) (Ywid * y[i])
                         - POINTWID, 2 * POINTWID + 1, 2 * POINTWID + 1);
             }
         }
-    
-    	
+    }
+
+    /**
+     * Displays the very simple polygon decomposed into convex polygons
+     *
+     */
+    public static class ConvexulationPanel extends JPanel{
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g;
+
+            // First set the scaling to fit the window
+            Dimension size = getSize();
+            int Xwid = (int) (0.95 * size.width);
+            int Ywid = (int) (0.95 * size.height);
+            
+            // First draw the segments from the D[] array, 
+            // corresponding to the very simple polygon.
+            g2.setColor(Color.red);
+            for (int i = 0; i < numHullPoints; i++) {
+                g2.drawLine((int) (Xwid * x[D[i]]), size.height - (int) (Ywid * y[D[i]]),
+                        (int) (Xwid * x[D[(i + 1) % numHullPoints]]),
+                        size.height - (int) (Ywid * y[D[(i + 1) % numHullPoints]]));
+            }
+            // Now draw the points
+            for (int i = 0; i < numPoints; i++) {
+                g2.fillRect((int) (Xwid * x[i]) - POINTWID, size.height - (int) (Ywid * y[i])
+                        - POINTWID, 2 * POINTWID + 1, 2 * POINTWID + 1);
+            }
+            
+            // Now draw the chords found in our createMinimalConvexulation function
+            g2.setColor(Color.blue);
+            for(int i = 0; i < numConvexulationChords; i++){
+            	int[] chord = convexulationChords.get(i);
+                g2.drawLine((int) (Xwid * x[D[chord[0]]]), size.height - (int) (Ywid * y[D[chord[0]]]),
+                        (int) (Xwid * x[D[chord[1]]]),
+                        size.height - (int) (Ywid * y[D[chord[1]]]));
+            }
+        }
     }
 }
