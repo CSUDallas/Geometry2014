@@ -189,6 +189,7 @@ public class MakeSimple {
      * as ordered in the array D.
      */
     public static void createMinimalConvexulation(){
+    	makeCounterclockwise(D, numPoints);  // This is required for chordInside() to work properly
     	numConvexulationChords = 0;
     	convexulationChords = new DSArrayList<int[]>();
     	// Find all interior chords of the polygon, very naively.
@@ -210,7 +211,9 @@ public class MakeSimple {
      * @param s  the start index of the chord, in the array P
      * @param e  the end index of the chord, in the array P
      * @param n  the number of sides of the polygon
-     * @return  true if the chord enters P as it leaves s.
+     * @return  true if the chord enters P as it leaves s. 
+     * 
+     * Note that the polygon is assumed to be given in counter-clockwise order.
      */
     public static boolean chordInside(int[] P, int s, int e, int n){
     	int before = (s + n - 1) % n;
@@ -274,7 +277,8 @@ public class MakeSimple {
      * Returns the signed area (half the sum of the 2x2 determinants) of the polygon described by P 
      * @param P Array of indices into the x[] and y[] arrays, giving a simple polygon
      * @param n Number of points in the polygon, in case its not all of the points
-     * @return  the area of the polygon. Positive if the points are traversed counter-clockwise, otherwise negative. 
+     * @return  the area of the polygon. Positive if the points are traversed counter-clockwise, 
+     * otherwise negative. 
      */
     public static double signedArea(int[] P, int n){
     	double rv = 0;
