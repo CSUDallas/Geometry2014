@@ -14,7 +14,7 @@ public class Environment {
     int WIDTH = 800;
     int HEIGHT = 600;
     DSArrayList<Point2D.Double> points;
-    DSArrayList<Triangle3D> triangles;
+    ArrayList<Triangle3D> triangles;
     ArrayList<EnvironmentObject> objects;
     double[][] transform = {{1,0,0,0},{0,1,0,0},{0,0,1,0}, {0, 0, 0, 1}};
     Graphics2D graphics;                 // The rendering context
@@ -38,7 +38,7 @@ public class Environment {
     double   angleStep = 0.05;
 
     public Environment(){
-        triangles = new DSArrayList<Triangle3D>();
+        triangles = new ArrayList<Triangle3D>();
         objects = new ArrayList<EnvironmentObject>();
         points = new DSArrayList<Point2D.Double>();
         leftRotationMatrix = makeLRRotation(-angleStep);
@@ -53,12 +53,14 @@ public class Environment {
         graphics.setColor(Color.WHITE);
         
         // Render the triangles
+        Triangle3D.cameraPos = new Point3D(cameraPos[0], cameraPos[1], cameraPos[2]);
+        Collections.sort(triangles);
         for(int i = 0; i < triangles.size(); i++)
             if(triangleIsVisible(triangles.get(i)) && triangleIsFacingCamera(triangles.get(i)))
                 renderTriangle(triangles.get(i), graphics);
         
         // Render the EnvironmentObjects
-        EnvironmentObject.cameraPos = new Point3D(cameraPos[0], cameraPos[1], 0);
+        EnvironmentObject.cameraPos = new Point3D(cameraPos[0], cameraPos[1], cameraPos[2]);
         Collections.sort(objects);
         for(int i = 0; i < objects.size(); i++)
             renderObject(objects.get(i), graphics);
@@ -75,7 +77,7 @@ public class Environment {
     
     private boolean triangleIsFacingCamera(Triangle3D t){
         return sigmaVal(t.points[0], t.points[1], t.points[2],
-                new Point3D(cameraPos[0], cameraPos[1], 0)) > 0;
+                new Point3D(cameraPos[0], cameraPos[1], cameraPos[2])) > 0;
                 
     }
 
@@ -97,7 +99,7 @@ public class Environment {
             graphics.drawLine((int)x[i], (int)y[i], (int)x[(i+1)%3], (int)y[(i+1)%3]);
         
         // Draw the interiors of the triangles
-        graphics.setColor(new Color(140, 180, 220, 200));
+        graphics.setColor(new Color(140, 180, 220, 255));
         Path2D.Double p = new Path2D.Double();
         p.moveTo(x[0], y[0]);
         p.lineTo(x[1], y[1]);
@@ -144,7 +146,8 @@ public class Environment {
     }
 
     public void moveBackward(){
-        double[] cp = {cameraPos[0] + Math.sin(cameraAngle), cameraPos[1] - Math.cos(cameraAngle), 0, 0};
+        double[] cp = {cameraPos[0] + Math.sin(cameraAngle), cameraPos[1] - Math.cos(cameraAngle), 
+        		cameraPos[2], 0};
         cameraPos = cp;
         //System.out.printf("Camera pos: (%.2f, %.2f, %.2f) ", cameraPos[0], cameraPos[1], cameraPos[2]);
         //System.out.printf("%.2f  ", cameraAngle * 180 / Math.PI);
@@ -153,7 +156,8 @@ public class Environment {
     }
 
     public void moveForward(){
-        double[] cp = {cameraPos[0] - Math.sin(cameraAngle), cameraPos[1] + Math.cos(cameraAngle), 0, 0};
+        double[] cp = {cameraPos[0] - Math.sin(cameraAngle), cameraPos[1] + Math.cos(cameraAngle), 
+        		cameraPos[2], 0};
         cameraPos = cp;
         updateTransform();
     }
@@ -164,6 +168,16 @@ public class Environment {
     
     public void nearFarther(){
         near += 0.1;
+    }
+    
+    public void moveUp(){
+    	cameraPos[2] += 0.5;
+        updateTransform();
+    }
+    
+    public void moveDown(){
+    	cameraPos[2] -= 0.5;
+        updateTransform();
     }
     
     private void updateTransform(){
