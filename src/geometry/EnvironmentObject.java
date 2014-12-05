@@ -1,9 +1,7 @@
 package geometry;
 
-import java.awt.geom.Point2D;
-
 public class EnvironmentObject implements Comparable<EnvironmentObject>{
-	private DSArrayList<Triangle3D> triangles;
+	protected DSArrayList<Triangle3D> triangles;
 	public  Point3D center;
 	public  Point3D velocity;
 	public static Point3D cameraPos; // For use with our compareTo method
