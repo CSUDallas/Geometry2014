@@ -47,8 +47,10 @@ public class Point3D {
 	   return String.format("(%.0f,  %.0f, %.0f)", x, y, z);
    }
    
-   public boolean equals(Point3D p){
-	   return x == p.x && y == p.y && z == p.z;
+   @Override
+   public boolean equals(Object p){
+	   return p instanceof Point3D && x == ((Point3D) p).x &&
+			   y == ((Point3D) p).y && z == ((Point3D) p).z;
    }
    
    /**
@@ -89,6 +91,41 @@ public class Point3D {
 	 */
 	public Point3D divide(double divisor) {
 		return new Point3D(x / divisor, y / divisor, z / divisor);
+	}
+
+	public void setLocation(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+
+	/**
+	 * Computes the cross product of two points.
+	 * @param p The point to cross with this.
+	 * @return The cross product of this and p.
+	 */
+	public Point3D cross(Point3D p) {
+		return new Point3D(
+				-this.z*p.y + p.y*this.z, 
+				 this.z*p.x - this.x*p.z, 
+				-this.y*p.x + this.x*p.z);
+	}
+
+	/**
+	 * Computes the dot product of two points.
+	 * @param p The point to dot with this.
+	 * @return The dot product of this and p.
+	 */
+	public double dot(Point3D p) {
+		return x*p.x + y*p.y + z*p.z;
+	}
+
+	/**
+	 * Normalizes this point so that its distance from the origin will be one.
+	 * @return A point on the unit sphere.
+	 */
+	public Point3D normalize() {
+		return this.divide(Math.sqrt(x*x + y*y + z*z));
 	}
 
 }
