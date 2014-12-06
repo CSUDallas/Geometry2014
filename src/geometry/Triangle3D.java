@@ -1,7 +1,5 @@
 package geometry;
 
-import java.awt.Polygon;
-
 
 /**
  * Holds points of a triangle in 3D.
@@ -11,8 +9,8 @@ import java.awt.Polygon;
  */
 
 public class Triangle3D implements Comparable<Triangle3D>{
-	Point3D[] points;		// Vertices of the triangle
-	Triangle3D[] triangles; // Neighbor triangles. triangles[0] is on edge 0-1.
+	public Point3D[] points;		// Vertices of the triangle
+	public Triangle3D[] triangles; // Neighbor triangles. triangles[0] is on edge 0-1.
 	public static Point3D cameraPos; // for use with our compareTo method
 	
 	/**
