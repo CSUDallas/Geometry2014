@@ -1,5 +1,7 @@
 package geometry;
 
+import java.awt.Color;
+
 
 /**
  * Holds points of a triangle in 3D.
@@ -12,7 +14,9 @@ public class Triangle3D implements Comparable<Triangle3D>{
 	public Point3D[] points;		// Vertices of the triangle
 	public Triangle3D[] triangles; // Neighbor triangles. triangles[0] is on edge 0-1.
 	public static Point3D cameraPos; // for use with our compareTo method
+	//public static Color c = new Color(1,1,1,1)
 	
+	public Color triColor = Color.white;
 	/**
 	 * Constructor
 	 * Constructs a Triangle3D having the three given points as vertices
@@ -25,6 +29,10 @@ public class Triangle3D implements Comparable<Triangle3D>{
 		points[0] = p0;
 		points[1] = p1;
 		points[2] = p2;
+	}
+	public Triangle3D(Point3D p0, Point3D p1, Point3D p2, Color triColor){
+		this(p0,p1,p2);
+		this.triColor = triColor;
 	}
 	
 	/**
@@ -41,7 +49,7 @@ public class Triangle3D implements Comparable<Triangle3D>{
 	 * @return
 	 */
 	public Triangle3D add(Point3D d){
-		return new Triangle3D(points[0].add(d), points[1].add(d), points[2].add(d));
+		return new Triangle3D(points[0].add(d), points[1].add(d), points[2].add(d),this.triColor);
 	}
 	
 	public boolean hasVertex(Point3D p){

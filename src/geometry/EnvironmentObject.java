@@ -1,5 +1,7 @@
 package geometry;
 
+import java.awt.Color;
+
 public class EnvironmentObject implements Comparable<EnvironmentObject>{
 	protected DSArrayList<Triangle3D> triangles;
 	public  Point3D center;
@@ -31,19 +33,20 @@ public class EnvironmentObject implements Comparable<EnvironmentObject>{
 		Point3D p6 = new Point3D(r, -r, r);
 		Point3D p7 = new Point3D(r, r, r);
 		Point3D p8 = new Point3D(-r, r, r);
+		Color c = Color.getHSBColor((float)Math.random(),(float)Math.random(),(float)Math.random());
 		
-		eo.triangles.add(new Triangle3D(p1, p4, p3));
-		eo.triangles.add(new Triangle3D(p1, p3, p2));
-		eo.triangles.add(new Triangle3D(p1, p2, p6));
-		eo.triangles.add(new Triangle3D(p1, p6, p5));
-		eo.triangles.add(new Triangle3D(p2, p3, p7));
-		eo.triangles.add(new Triangle3D(p2, p7, p6));
-		eo.triangles.add(new Triangle3D(p8, p5, p6));
-		eo.triangles.add(new Triangle3D(p8, p6, p7));
-		eo.triangles.add(new Triangle3D(p8, p7, p3));
-		eo.triangles.add(new Triangle3D(p8, p3, p4));
-		eo.triangles.add(new Triangle3D(p4, p1, p5));
-		eo.triangles.add(new Triangle3D(p4, p5, p8));
+		eo.triangles.add(new Triangle3D(p1, p4, p3,c));
+		eo.triangles.add(new Triangle3D(p1, p3, p2,c));
+		eo.triangles.add(new Triangle3D(p1, p2, p6,c));
+		eo.triangles.add(new Triangle3D(p1, p6, p5,c));
+		eo.triangles.add(new Triangle3D(p2, p3, p7,c));
+		eo.triangles.add(new Triangle3D(p2, p7, p6,c));
+		eo.triangles.add(new Triangle3D(p8, p5, p6,c));
+		eo.triangles.add(new Triangle3D(p8, p6, p7,c));
+		eo.triangles.add(new Triangle3D(p8, p7, p3,c));
+		eo.triangles.add(new Triangle3D(p8, p3, p4,c));
+		eo.triangles.add(new Triangle3D(p4, p1, p5,c));
+		eo.triangles.add(new Triangle3D(p4, p5, p8,c));
 		return eo;
 	}
 	
@@ -51,6 +54,7 @@ public class EnvironmentObject implements Comparable<EnvironmentObject>{
 		DSArrayList<Triangle3D> rv = new DSArrayList<Triangle3D>(triangles.size());
 		for(int i = 0; i < triangles.size(); i++){
 			rv.add(triangles.get(i).add(center));
+		
 		}
 		return rv;
 	}

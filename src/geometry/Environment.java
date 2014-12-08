@@ -25,6 +25,7 @@ public class Environment {
     double[][] rightRotationMatrix;
     double[][] moveForwardMatrix;
     double[][] moveBackwardMatrix;
+    
     /**
      * kind of working.....
      * if the light source is outside the frame it works. aaaaaad
@@ -42,6 +43,9 @@ public class Environment {
     double[] cameraPos = {0, 0, 0, 1};
     double   cameraAngle = 0;
     double   angleStep = 0.05;
+    
+    //lighting
+    double ambientLight = 0.2;
 
     public Environment(){
         triangles = new ArrayList<Triangle3D>();
@@ -108,16 +112,14 @@ public class Environment {
         double shade = shadeTriangle(tempLightSource,t);
         // applies a shade to the current triangle based on the angle of the vectors. 
         // maybe call the color a different way to get a larger variety of colors, instead of 255.
-        if(shade<=1&&shade>=0){
-        	
-        	Color C = Color.getHSBColor((float)(.47*shade), (float)(.75*shade),(float)(.9*shade));
-       
-        	graphics.setColor(C);
+    	Color C = t.triColor;
+    	float[] hsb = Color.RGBtoHSB(C.getRed(), C.getGreen(),C.getBlue(), null);
+        if(shade<=1&&shade>=ambientLight){
+        	C = Color.getHSBColor((float)(hsb[0]), (float)(hsb[1]),(float)(hsb[2]*shade));
+           	graphics.setColor(C);
         }
         else{  
-        shade=0.1;
-       
-        Color C = Color.getHSBColor((float)(.47*.1), (float)(.75*.1),(float)(.9*.1));
+    	C = Color.getHSBColor((float)(hsb[0]), (float)(hsb[1]),(float)(hsb[2]*ambientLight));
         graphics.setColor(C);
         }
         Path2D.Double p = new Path2D.Double();
