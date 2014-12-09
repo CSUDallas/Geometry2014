@@ -30,6 +30,16 @@ public class Triangle3D implements Comparable<Triangle3D>{
 		points[1] = p1;
 		points[2] = p2;
 	}
+
+	/**
+	 * Creates a new Triangle3D from the triangle provided.
+	 * @param source A Triangle3D to duplicate
+	 */
+	public Triangle3D(Triangle3D source) {
+		this(source.points[0], source.points[1],
+				source.points[2], source.triColor);
+	}
+
 	public Triangle3D(Point3D p0, Point3D p1, Point3D p2, Color triColor){
 		this(p0,p1,p2);
 		this.triColor = triColor;
