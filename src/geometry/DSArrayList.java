@@ -12,7 +12,10 @@
 
 package geometry;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class DSArrayList<E> implements Iterable<E> {
     
@@ -192,5 +195,18 @@ public class DSArrayList<E> implements Iterable<E> {
         
         return true;
     }
-    
+
+    @Override
+    public int hashCode() {
+    	return Objects.hash(Arrays.copyOf(array, numItems));
+    }
+
+    /**
+     * Creates a Java 8 stream consisting of the elements in this ArrayList.
+     * @return
+     */
+	public Stream<E> stream() {
+		return Arrays.stream(array).limit(numItems);
+	}
+
 } 
