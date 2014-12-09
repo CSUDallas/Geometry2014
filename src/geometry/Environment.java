@@ -4,16 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 
 
 public class Environment {
     int WIDTH = 800;
-    int HEIGHT = 600;
+    int HEIGHT = 800;
     DSArrayList<Point2D.Double> points;
     ArrayList<Triangle3D> triangles;
     ArrayList<EnvironmentObject> objects;
