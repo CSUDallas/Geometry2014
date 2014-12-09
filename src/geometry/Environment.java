@@ -4,16 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 
 
 public class Environment {
     int WIDTH = 800;
-    int HEIGHT = 600;
+    int HEIGHT = 800;
     DSArrayList<Point2D.Double> points;
     ArrayList<Triangle3D> triangles;
     ArrayList<EnvironmentObject> objects;
@@ -31,7 +29,7 @@ public class Environment {
      * if the light source is outside the frame it works. aaaaaad
      * if he light source is directly above the center, half lights up and half is dark....
      */
-    public Point3D tempLightSource = new Point3D(1,1,1);
+    Point3D tempLightSource = new Point3D(1,1,1);
     // Locations of the view frustrum planes
     double near = 1;
     double left = -1;
@@ -45,7 +43,7 @@ public class Environment {
     double   angleStep = 0.05;
     
     //lighting
-    public double ambientLight = 0.2;
+    double ambientLight = 0.2;
 
     public Environment(){
         triangles = new ArrayList<Triangle3D>();
