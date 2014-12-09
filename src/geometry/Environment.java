@@ -33,7 +33,7 @@ public class Environment {
      * if the light source is outside the frame it works. aaaaaad
      * if he light source is directly above the center, half lights up and half is dark....
      */
-    Point3D tempLightSource = new Point3D(1,1,1);
+    public Point3D tempLightSource = new Point3D(1,1,1);
     // Locations of the view frustrum planes
     double near = 1;
     double left = -1;
@@ -47,7 +47,7 @@ public class Environment {
     double   angleStep = 0.05;
     
     //lighting
-    double ambientLight = 0.2;
+    public double ambientLight = 0.2;
 
     public Environment(){
         triangles = new ArrayList<Triangle3D>();
