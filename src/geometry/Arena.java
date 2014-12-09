@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
-import java.util.concurrent.Semaphore;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,10 +21,7 @@ public class Arena extends JPanel implements KeyListener {
 	Timer timer;
 	HashSet<Character>     keysDown;	// Holds the keys that are currently down.
 	RenderingHints rh;					// for drawing the graphics
-	private static Semaphore threadSem = new Semaphore(1,false);
-	Graphics2D graphics;
-	boolean runningThread=false;
-	
+
 	public static void main(String[] args) {
 		// Set up the arena and an environment
 		arena = new Arena();
@@ -49,8 +45,7 @@ public class Arena extends JPanel implements KeyListener {
 		// Start the arena's run loop
 		arena.timer = new Timer(30, arena.runLoop);
 		arena.timer.start();
-		
-			}
+	}
 
 	@Override
 	public void keyPressed(KeyEvent ke) {
@@ -69,14 +64,9 @@ public class Arena extends JPanel implements KeyListener {
 
 
 	public void paint(Graphics g){
-		graphics = (Graphics2D) g;
+		Graphics2D graphics = (Graphics2D) g;
 		graphics.addRenderingHints(rh);
-		
-			if(!runningThread){
-	        RenderThread ft = new RenderThread(arena);
-			}
-	       
-	        //e.render(graphics);	
+		e.render(graphics);	
 	}
 
 

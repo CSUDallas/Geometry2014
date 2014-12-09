@@ -1,12 +1,10 @@
 package geometry;
 
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,8 +56,6 @@ public class Environment {
         moveForwardMatrix = makeFBMatrix(-1);
         moveBackwardMatrix = makeFBMatrix(1);
     }
-  
-
 
     public void render(Graphics2D graphics){
         graphics.setColor(Color.DARK_GRAY);
@@ -307,7 +303,5 @@ public class Environment {
         return b.x*c.y*d.z + b.y*c.z*d.x + b.z*c.x*d.y -
                 b.z*c.y*d.x - b.y*c.x*d.z - b.x*c.z*d.y;
     }
-
-    
 
 }
