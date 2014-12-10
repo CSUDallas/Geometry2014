@@ -91,6 +91,10 @@ public class Arena extends JPanel implements KeyListener {
 				e.moveDown();
 			if(keysDown.contains('l'))
 				e.moveUp();
+			if(keysDown.contains('h'))
+				e.moveLeft();
+			if(keysDown.contains('k'))
+				e.moveRight();
 			if(keysDown.contains('['))
 				e.nearFarther();
 			if(keysDown.contains(']'))

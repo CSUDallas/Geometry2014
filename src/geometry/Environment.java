@@ -248,7 +248,27 @@ public class Environment {
     	cameraPos[2] -= 0.5;
         updateTransform();
     }
-    
+
+    /**
+     * Slides the camera to its right without changing the rotation angle.
+     * Not to be confused with {@link #rotateRight()}.
+     */
+    public void moveRight() {
+        cameraPos = new double[]{ cameraPos[0] + Math.cos(cameraAngle),
+        		cameraPos[1] + Math.sin(cameraAngle), cameraPos[2], 0 };
+    	updateTransform();
+    }
+
+    /**
+     * Slides the camera to its left without changing the rotation angle.
+     * Not to be confused with {@link #rotateLeft()}.
+     */
+    public void moveLeft() {
+        cameraPos = new double[]{ cameraPos[0] - Math.cos(cameraAngle),
+        		cameraPos[1] - Math.sin(cameraAngle), cameraPos[2], 0 };
+    	updateTransform();
+    }
+
     private void updateTransform(){
         double[][] newTransform = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0},
                 {-cameraPos[0], -cameraPos[1], -cameraPos[2], 1}};
