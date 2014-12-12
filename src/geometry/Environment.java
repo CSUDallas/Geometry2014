@@ -55,11 +55,41 @@ public class Environment {
         moveBackwardMatrix = makeFBMatrix(1);
     }
 
+    public Camera getCamera() {
+    	return new Camera(
+    			new Point3D(cameraPos[0], cameraPos[1], cameraPos[2]),
+    			new Point3D(-Math.sin(cameraAngle), Math.cos(cameraAngle), 0));
+    }
+
+    public void setCamera(Camera c) {
+       cameraPos[0] = c.position.x;
+       cameraPos[1] = c.position.y;
+       cameraPos[2] = c.position.z;
+       cameraAngle = (c.direction.x > 0 ? -1 : 1) * Math.acos(c.direction.y);
+       updateTransform();
+    }
+
+    /**
+     * Shortcut for {@link #render(Graphics2D, boolean)
+     * render(graphics, false)}.
+     * @param graphics The graphics with which to render
+     */
     public void render(Graphics2D graphics){
-        graphics.setColor(Color.DARK_GRAY);
-        graphics.fillRect(0, 0, WIDTH, WIDTH);
-        graphics.setColor(Color.WHITE);
-        
+    	render(graphics, true);
+    }
+
+    /**
+     * Renders the environment using the graphics provided.
+     * @param graphics The graphics with which to render
+     * @param drawBG   {@code true} iff the background should be drawn
+     */
+    public void render(Graphics2D graphics, boolean drawBG){
+       if (drawBG) {
+		   graphics.setColor(Color.DARK_GRAY);
+		   graphics.fillRect(0, 0, WIDTH, WIDTH);
+		   graphics.setColor(Color.WHITE);
+       }
+
         // Render the triangles
         Triangle3D.cameraPos = new Point3D(cameraPos[0], cameraPos[1], cameraPos[2]);
         Collections.sort(triangles);
@@ -300,7 +330,7 @@ public class Environment {
         return rv;
     }
 
-    private double[][] makeLRRotation(double angle){
+    public static double[][] makeLRRotation(double angle){
         double rv[][] =  {
                 {Math.cos(angle), Math.sin(angle), 0, 0},
                 {-Math.sin(angle), Math.cos(angle), 0, 0},
