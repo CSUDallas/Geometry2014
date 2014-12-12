@@ -330,7 +330,7 @@ public class Environment {
         return rv;
     }
 
-    public double[][] makeLRRotation(double angle){
+    public static double[][] makeLRRotation(double angle){
         double rv[][] =  {
                 {Math.cos(angle), Math.sin(angle), 0, 0},
                 {-Math.sin(angle), Math.cos(angle), 0, 0},
