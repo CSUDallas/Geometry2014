@@ -106,9 +106,9 @@ public class Point3D {
 	 */
 	public Point3D cross(Point3D p) {
 		return new Point3D(
-				-this.z*p.y + p.y*this.z, 
-				 this.z*p.x - this.x*p.z, 
-				-this.y*p.x + this.x*p.z);
+				this.y*p.z - this.z*p.y, 
+				this.z*p.x - this.x*p.z, 
+				this.x*p.y - this.y*p.x);
 	}
 
 	/**
